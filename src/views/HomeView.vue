@@ -13,7 +13,7 @@
         </section>
 
         <section class="create-todo">
-            <h3>CREATE A TODO</h3>
+            <h3>CREATE AN ITEM</h3>
 
             <form id="new-todo-form" @submit.prevent="addTodo">
                 <h4>What's on your todo list?</h4>
@@ -52,7 +52,7 @@
                     </label>
                 </div>
 
-                <input type="submit" value="Add todo" />
+                <input type="submit" value="Add item" />
             </form>
         </section>
 
@@ -125,8 +125,6 @@ export default {
                 content: this.inputContent,
                 category: this.inputCategory,
                 done: false,
-                editable: false,
-                createdAt: new Date().getTime(),
             });
 
             this.inputContent = "";

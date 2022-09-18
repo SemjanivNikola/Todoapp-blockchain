@@ -1,11 +1,10 @@
+import contract from "@truffle/contract";
 import Vue from "vue";
 import Vuex from "vuex";
-import Web3 from 'web3'
-import contract from "@truffle/contract";
+import Web3 from 'web3';
+import todoModule from "./todoModule";
 
 import TodoListContract from "../../build/contracts/TodoList.json";
-
-const CONTRACT_ADDRESS = "0xCC7E7D31e47bBa3067D5b113Ed40d0760B37895c";
 
 Vue.use(Vuex);
 
@@ -15,7 +14,6 @@ export default new Vuex.Store({
     account: null,
     web3Provider: null,
     loading: false,
-    contract: null,
   },
   mutations: {
     setProvider(state, payload) {
@@ -27,9 +25,6 @@ export default new Vuex.Store({
     setLoading(state, payload) {
       state.loading = payload;
     },
-    setContract(state, payload) {
-      state.contract = payload;
-    }
   },
   getters: {
     isLoading(state) {
@@ -38,9 +33,6 @@ export default new Vuex.Store({
     getAccount(state) {
       return state.account;
     },
-    getContract(state) {
-      return state.contract;
-    }
   },
   actions: {
     async process({ dispatch, commit }) {
@@ -81,11 +73,13 @@ export default new Vuex.Store({
       const todoContract = contract(TodoListContract);
       todoContract.setProvider(state.web3Provider);
       
-      commit("setContract", todoContract);
+      commit("todoList/setContract", todoContract);
     },
-    getContractInstance ({getters}) {
-      const todoContract = getters.getContract;
-      return todoContract.at(CONTRACT_ADDRESS);
-    }
   },
+  modules: {
+    todoList: {
+        namespaced: true,
+        ...todoModule,
+    },
+},
 });

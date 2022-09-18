@@ -1,5 +1,5 @@
 
-const CONTRACT_ADDRESS = "0x6fF41Ba8554117A58691c47b7E36Df0573Ff8269";
+const CONTRACT_ADDRESS = "0x9E3c077C553b2f43729B95828bcf33424D564064";
 
 export default {
   state: {
@@ -46,7 +46,7 @@ export default {
       const instance = await dispatch("getContractInstance");
       const address = rootGetters.getAccount;
 
-      const count = await instance.taskCount({ from: address });
+      const count = await instance.taskCount({ from: address }) + 1;
       commit("setCount", count);
 
       const taskList = [];

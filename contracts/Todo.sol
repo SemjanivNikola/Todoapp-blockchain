@@ -24,10 +24,6 @@ contract TodoList {
     bool completed
   );
 
-  constructor() public {
-    createTask("Example item - Finish blockchain project", "personal");
-  }
-
   function createTask(string memory _content, string memory _category) public {
     taskCount ++;
     tasks[taskCount] = Task(taskCount, _content, _category, false);

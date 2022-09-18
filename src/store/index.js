@@ -66,20 +66,24 @@ export default new Vuex.Store({
       }
     },
     async loadAccount({ commit }) {
-      const accList = await ethereum.request({ method: 'eth_accounts' });
-      commit("setAccount", accList[0]);
+      try {
+        const accList = await ethereum.request({ method: 'eth_accounts' });
+        commit("setAccount", accList[0]);
+      } catch (error) {
+        alert("It looks like you don't have metamask extension.");
+      }
     },
     async loadContract({ state, commit }) {
       const todoContract = contract(TodoListContract);
       todoContract.setProvider(state.web3Provider);
-      
+
       commit("todoList/setContract", todoContract);
     },
   },
   modules: {
     todoList: {
-        namespaced: true,
-        ...todoModule,
+      namespaced: true,
+      ...todoModule,
     },
-},
+  },
 });

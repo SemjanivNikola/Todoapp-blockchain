@@ -91,6 +91,7 @@ export default {
 }
 
 .todo-item .todo-content input {
+    width: 100%;
     color: var(--dark);
     font-size: 1.125rem;
 }

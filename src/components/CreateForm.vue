@@ -59,16 +59,18 @@ export default {
                 this.inputContent.trim() === "" ||
                 this.inputCategory === null
             ) {
+                alert("Can not submit empty item.");
                 return;
             }
 
-            this.todos.push({
+            const res = this.$store.dispatch("todoList/handleCreateTask", {
                 content: this.inputContent,
                 category: this.inputCategory,
-                done: false,
-            });
+            }, {root: true});
 
-            this.inputContent = "";
+            if (res) {
+                this.inputContent = "";
+            }
         },
     }
 };

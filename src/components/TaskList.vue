@@ -3,15 +3,15 @@
         <h3>TODO LIST</h3>
         <div class="list" id="todo-list">
             <div
-                v-for="(todo, index) in todos"
+                v-for="(task, index) in taskList"
                 :key="index"
-                :class="`todo-item ${todo.done && 'done'}`"
+                :class="`todo-item ${task.completed && 'done'}`"
             >
                 <label>
-                    <input type="checkbox" v-model="todo.done" />
+                    <input type="checkbox" v-model="task.completed" />
                     <span
                         :class="`bubble ${
-                            todo.category == 'business'
+                            task.category == 'business'
                                 ? 'business'
                                 : 'personal'
                         }`"
@@ -19,11 +19,11 @@
                 </label>
 
                 <div class="todo-content">
-                    <input type="text" v-model="todo.content" />
+                    <input type="text" v-model="task.content" />
                 </div>
 
                 <div class="actions">
-                    <button class="delete" @click="removeTodo(todo)">
+                    <button class="delete" @click="removeTask(task)">
                         Delete
                     </button>
                 </div>
@@ -33,17 +33,30 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 export default {
     name: "TaskList",
     data() {
         return {
-            todos: []
+            loading: false,
         };
     },
+    async created() {
+        this.loading = true;
+        await this.$store
+            .dispatch("todoList/readTaskList", null, { root: true })
+            .finally(() => {
+                this.loading = false;
+            });
+    },
     methods: {
-        removeTodo(todo) {
-            this.todos = this.todos.filter((t) => t !== todo);
+        removeTask(task) {
+            console.log("Task > ", task);
+            // this.todos = this.todos.filter((t) => t !== todo);
         },
+    },
+    computed: {
+        ...mapGetters({ taskList: "todoList/getTaskList" }),
     },
 };
 </script>

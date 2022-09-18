@@ -19,12 +19,6 @@ export default {
 </script>
 
 <style scoped>
-section {
-    margin-top: 2rem;
-    margin-bottom: 2rem;
-    padding-left: 1.5rem;
-    padding-right: 1.5em;
-}
 .greeting .title {
     display: flex;
 }

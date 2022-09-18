@@ -1,5 +1,5 @@
 
-const CONTRACT_ADDRESS = "0xCC7E7D31e47bBa3067D5b113Ed40d0760B37895c";
+const CONTRACT_ADDRESS = "0x6fF41Ba8554117A58691c47b7E36Df0573Ff8269";
 
 export default {
   state: {
@@ -20,9 +20,13 @@ export default {
     addNewTask(state, payload) {
       state.taskList.push(payload);
     },
-    handleToggle(state, payload) {
+    toggleTask(state, payload) {
       const item = state.taskList.filter(item => item.id === payload.id);
       item[0].completed = payload.value;
+    },
+    deleteTask(state, payload) {
+      const index = state.taskList.findIndex(item => item.id === payload);
+      state.taskList.splice(index, 1);
     }
   },
   getters: {
@@ -47,7 +51,10 @@ export default {
 
       const taskList = [];
       for (let i = 0; i < count; i++) {
-        taskList.push(await instance.tasks(i))
+        const { id, ...otherprops } = await instance.tasks(i);
+        if (otherprops.content !== "") {
+          taskList.push({ id: id.words[0], ...otherprops });
+        }
       }
       commit("setTaskList", taskList);
     },
@@ -57,7 +64,7 @@ export default {
         const address = rootGetters.getAccount;
 
         const response = await instance.createTask(payload.content, payload.category, { from: address });
-        commit("addNewTask", { id: response.logs[0].args.id.words[0], content: response.logs[0].args.content, commpleted: response.logs[0].args.completed, category: response.logs[0].args.category });
+        commit("addNewTask", { id: response.logs[0].args.id.words[0], content: response.logs[0].args.content, completed: response.logs[0].args.completed, category: response.logs[0].args.category });
 
         return true;
       } catch (error) {
@@ -72,11 +79,26 @@ export default {
 
         const response = await instance.toggleCompleted(payload, { from: address });
 
-        commit("handleToggle", { id: payload, value: response.logs[0].args.completed });
+        commit("toggleTask", { id: payload, value: response.logs[0].args.completed });
 
         return true;
       } catch (error) {
         console.warn("Error on task toggle: ", error);
+        return false;
+      }
+    },
+    async handleDelete({ dispatch, commit, rootGetters }, payload) {
+      try {
+        const instance = await dispatch("getContractInstance");
+        const address = rootGetters.getAccount;
+
+        await instance.deleteTask(payload, { from: address });
+
+        commit("deleteTask", payload);
+
+        return true;
+      } catch (error) {
+        console.warn("Error on task delete: ", error);
         return false;
       }
     }

@@ -8,7 +8,7 @@
                 :class="`todo-item ${task.completed && 'done'}`"
             >
                 <label>
-                    <input type="checkbox" v-model="task.completed" @click="handleToggle(task)" />
+                    <input type="checkbox" v-model="task.completed" @click="handleToggle(task.id)" />
                     <span
                         :class="`bubble ${
                             task.category == 'business'
@@ -19,11 +19,11 @@
                 </label>
 
                 <div class="todo-content">
-                    <input type="text" v-model="task.content" />
+                    <input type="text" v-model="task.content" readonly />
                 </div>
 
                 <div class="actions">
-                    <button class="delete" @click="removeTask(task)">
+                    <button class="delete" @click="removeTask(task.id)">
                         Delete
                     </button>
                 </div>
@@ -50,14 +50,13 @@ export default {
             });
     },
     methods: {
-        handleToggle(task) {
+        handleToggle(id) {
             event.preventDefault(); // Preventing modification outside vuex
 
-            this.$store.dispatch("todoList/handleToggle", task.id, {root: true})
+            this.$store.dispatch("todoList/handleToggle", id, {root: true})
         },
-        removeTask(task) {
-            console.log("Task > ", task);
-            // this.todos = this.todos.filter((t) => t !== todo);
+        removeTask(id) {
+            this.$store.dispatch("todoList/handleDelete", id, {root: true})
         },
     },
     computed: {

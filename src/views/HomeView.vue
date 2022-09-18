@@ -1,15 +1,7 @@
 <template>
     <main class="app">
         <section class="greeting">
-            <h2 class="title">
-                Your address,
-                <input
-                    type="text"
-                    id="name"
-                    placeholder="address is here"
-                    v-model="name"
-                />
-            </h2>
+            <h2 class="title">Your address, {{getAccount}}</h2>
         </section>
 
         <section class="create-todo">
@@ -91,26 +83,16 @@
 </template>
 
 <script>
+import {mapGetters} from "vuex";
+
 export default {
     name: "App",
     data() {
         return {
             todos: [],
-            name: "",
             inputContent: "",
             inputCategory: "business",
         };
-    },
-    watch: {
-        name: (val) => {
-            localStorage.setItem("name", val);
-        },
-        todos: {
-            handler(val) {
-                localStorage.setItem("todos", JSON.stringify(val));
-            },
-            deep: true,
-        },
     },
     methods: {
         addTodo() {
@@ -132,11 +114,10 @@ export default {
         removeTodo(todo) {
             this.todos = this.todos.filter((t) => t !== todo);
         },
-        onMounted() {
-            this.name = localStorage.getItem("name") || "";
-            this.todos = JSON.parse(localStorage.getItem("todos")) || [];
-        },
     },
+    computed: {
+        ...mapGetters(['getAccount']),
+    }
 };
 </script>
 

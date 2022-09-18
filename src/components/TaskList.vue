@@ -8,7 +8,7 @@
                 :class="`todo-item ${task.completed && 'done'}`"
             >
                 <label>
-                    <input type="checkbox" v-model="task.completed" />
+                    <input type="checkbox" v-model="task.completed" @click="handleToggle(task)" />
                     <span
                         :class="`bubble ${
                             task.category == 'business'
@@ -50,6 +50,11 @@ export default {
             });
     },
     methods: {
+        handleToggle(task) {
+            event.preventDefault(); // Preventing modification outside vuex
+
+            this.$store.dispatch("todoList/handleToggle", task.id, {root: true})
+        },
         removeTask(task) {
             console.log("Task > ", task);
             // this.todos = this.todos.filter((t) => t !== todo);

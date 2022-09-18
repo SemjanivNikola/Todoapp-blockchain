@@ -20,6 +20,10 @@ export default {
     addNewTask(state, payload) {
       state.taskList.push(payload);
     },
+    handleToggle(state, payload) {
+      const item = state.taskList.filter(item => item.id === payload.id);
+      item[0].completed = payload.value;
+    }
   },
   getters: {
     getContract(state) {
@@ -27,7 +31,7 @@ export default {
     },
     getTaskList(state) {
       return state.taskList;
-    }
+    },
   },
   actions: {
     getContractInstance({ getters }) {
@@ -58,6 +62,21 @@ export default {
         return true;
       } catch (error) {
         console.warn("Error on task create: ", error);
+        return false;
+      }
+    },
+    async handleToggle({ dispatch, commit, rootGetters }, payload) {
+      try {
+        const instance = await dispatch("getContractInstance");
+        const address = rootGetters.getAccount;
+
+        const response = await instance.toggleCompleted(payload, { from: address });
+
+        commit("handleToggle", { id: payload, value: response.logs[0].args.completed });
+
+        return true;
+      } catch (error) {
+        console.warn("Error on task toggle: ", error);
         return false;
       }
     }
